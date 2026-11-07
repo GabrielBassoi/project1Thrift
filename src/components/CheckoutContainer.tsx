@@ -5,7 +5,7 @@ export default function CheckoutContainer({ items }: CheckoutContainerProps) {
   return (
     <div>
       {items.map((item) => (
-        <CheckoutCard {...item} />
+        <CheckoutCard key={item.id} {...item} />
       ))}
       <h3>
         {items.length > 0

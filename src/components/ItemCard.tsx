@@ -1,4 +1,4 @@
-import type { ClothingProduct } from "../data/data";
+import type { ItemCardFunction } from "./ThriftHappens";
 
 export default function ItemCard({
   name,
@@ -11,7 +11,8 @@ export default function ItemCard({
   price,
   quantity,
   itemQuantity,
-}: ClothingProduct) {
+  handleQuantityAdjust
+}: ItemCardFunction) {
   return (
     <div className="ItemCard">
       <img src={image} alt={name} />
@@ -55,9 +56,9 @@ export default function ItemCard({
       <br />
 
       <div>
-        <button>-</button>
+        <button disabled={itemQuantity === 0} onClick={() => handleQuantityAdjust(-1)}>-</button>
         <span>{itemQuantity}</span>
-        <button>+</button>
+        <button disabled={itemQuantity === quantity} onClick={() => handleQuantityAdjust(1)}>+</button>
       </div>
 
       <button>Add to Cart</button>
