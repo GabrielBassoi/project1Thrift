@@ -20,40 +20,40 @@ export default function ItemCard({
       <br />
       <h4>{description}</h4>
       <br />
-      
+
       <div>
         <p>Fit</p>
         <p>{fit}</p>
       </div>
       <br />
-      
+
       <div>
         <p>Size</p>
         <p>{size}</p>
       </div>
       <br />
-      
+
       <div>
         <p>Category</p>
         <p>{category}</p>
       </div>
       <br />
-      
+
       <div>
         <p>Color</p>
         <p>{color}</p>
       </div>
       <br />
-      
+
       <div>
         <p>In Stock</p>
         <p>{quantity}</p>
       </div>
       <br />
-      
+
       <h3>${price}</h3>
       <br />
-      
+
       <div>
         <button>-</button>
         <span>{itemQuantity}</span>

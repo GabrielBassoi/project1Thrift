@@ -8,6 +8,10 @@ export interface ItemsContainerProps {
     items: ClothingProduct[];
 }
 
+export interface CheckoutContainerProps {
+    items: ClothingProduct[];
+}
+
 export default function ThriftHappens() {
 
     const [items, setItems] = useState<ClothingProduct[]>([]/* INITIALIZE */);
@@ -20,7 +24,7 @@ export default function ThriftHappens() {
             </header>
             <body>
                 <ItemsContainer items={items}/>
-                <CheckoutContainer/>
+                <CheckoutContainer items={checkout}/>
             </body>
         </div>
     )
