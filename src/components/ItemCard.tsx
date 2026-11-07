@@ -11,7 +11,8 @@ export default function ItemCard({
   price,
   quantity,
   itemQuantity,
-  handleQuantityAdjust
+  handleQuantityAdjust,
+  handleAddCheckout,
 }: ItemCardFunction) {
   return (
     <div className="ItemCard">
@@ -55,13 +56,25 @@ export default function ItemCard({
       <h3>${price}</h3>
       <br />
 
-      <div>
-        <button disabled={itemQuantity === 0} onClick={() => handleQuantityAdjust(-1)}>-</button>
-        <span>{itemQuantity}</span>
-        <button disabled={itemQuantity === quantity} onClick={() => handleQuantityAdjust(1)}>+</button>
-      </div>
+      {quantity === 0 ? (
+        <div>
+          <button
+            disabled={itemQuantity === 0}
+            onClick={() => handleQuantityAdjust(-1)}
+          >-</button>
+          <span>{itemQuantity}</span>
+          <button
+            disabled={itemQuantity === quantity}
+            onClick={() => handleQuantityAdjust(1)}
+          >+</button>
+        </div>
+      ) : (
+        <h3>Out of Stock</h3>
+      )}
 
-      <button>Add to Cart</button>
+      <button disabled={itemQuantity === 0} onClick={handleAddCheckout}>
+        Add to Cart
+      </button>
     </div>
   );
 }
