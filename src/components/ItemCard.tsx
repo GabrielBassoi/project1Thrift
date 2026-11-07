@@ -72,7 +72,7 @@ export default function ItemCard({
         <h3>Out of Stock</h3>
       )}
 
-      <button disabled={itemQuantity === 0} onClick={handleAddCheckout}>
+      <button disabled={itemQuantity === 0} onClick={() => handleAddCheckout(itemQuantity)}>
         Add to Cart
       </button>
     </div>

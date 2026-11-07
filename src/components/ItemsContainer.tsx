@@ -13,7 +13,7 @@ export default function ItemsContainer({
           key={item.id}
           {...item}
           handleQuantityAdjust={(delta: number) => handleQuantityAdjust(item.id, delta)}
-          handleAddCheckout={() => handleAddCheckout(item.id)}
+          handleAddCheckout={(quantity: number) => handleAddCheckout(item.id, quantity)}
         />
       ))}
     </div>

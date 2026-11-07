@@ -6,17 +6,22 @@ import type { ClothingProduct } from "../data/data";
 
 export interface ItemCardFunction extends ClothingProduct {
   handleQuantityAdjust: (delta: number) => void;
-  handleAddCheckout: () => void;
+  handleAddCheckout: (quantity: number) => void;
 }
 
 export interface ItemsContainerProps {
   items: ClothingProduct[];
   handleQuantityAdjust: (id: number, delta: number) => void;
-  handleAddCheckout: (id: number) => void;
+  handleAddCheckout: (id: number, quantity: number) => void;
+}
+
+export interface CheckoutCardFunction extends ClothingProduct {
+  handleRemoveItemCheckout: (quantity: number) => void;
 }
 
 export interface CheckoutContainerProps {
   items: ClothingProduct[];
+  handleRemoveItemCheckout: (id: number, quantity: number) => void;
 }
 
 export default function ThriftHappens() {
@@ -26,6 +31,7 @@ export default function ThriftHappens() {
 
   // Handlers
 
+  // Handles the addtion and subtraction of the counter for each item
   function handleQuantityAdjust(id: number, delta: number) {
     setItems((prev) =>
       prev.map((item) => {
@@ -39,32 +45,46 @@ export default function ThriftHappens() {
     );
   }
 
-  function handleAddCheckout(id: number) {
-    let itemAdd = items.find((item) => item.id === id);
+  // Adds a specific item to the checkout list
+  function handleAddCheckout(id: number, quantity: number) {
+    if (quantity === 0) return;
 
-    if (itemAdd === undefined) return;
-    if (itemAdd.itemQuantity === 0) return;
-
-    if (checkout.find((item) => item.id === itemAdd.id)) {
+    if (checkout.find((item) => item.id === id)) {
       setCheckout((prev) =>
         prev.map((item) =>
-          item.id === itemAdd.id
+          item.id === id
             ? {
                 ...item,
-                itemQuantity: item.itemQuantity + itemAdd.itemQuantity,
+                itemQuantity: item.itemQuantity + quantity,
               }
             : { ...item },
         ),
       );
     } else {
+      let itemAdd = items.find((item) => item.id === id);
+      if (itemAdd === undefined) return;
       setCheckout((prev) => [...prev, itemAdd]);
     }
 
-    itemAdd.quantity = itemAdd.quantity - itemAdd.itemQuantity;
-    itemAdd.itemQuantity = 0;
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, quantity: item.quantity - quantity, itemQuantity: 0 }
+          : { ...item },
+      ),
+    );
+  }
+
+  // Removes the item from checkout and restore the item's quantity
+  function handleRemoveItemCheckout(id: number, quantity: number) {
+    setCheckout((prev) => prev.filter((item) => item.id !== id));
 
     setItems((prev) =>
-      prev.map((item) => (item.id === itemAdd.id ? itemAdd : { ...item })),
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, quantity: item.quantity + quantity }
+          : { ...item },
+      ),
     );
   }
 
@@ -80,7 +100,10 @@ export default function ThriftHappens() {
           handleQuantityAdjust={handleQuantityAdjust}
           handleAddCheckout={handleAddCheckout}
         />
-        <CheckoutContainer items={checkout} />
+        <CheckoutContainer
+          items={checkout}
+          handleRemoveItemCheckout={handleRemoveItemCheckout}
+        />
       </body>
     </div>
   );

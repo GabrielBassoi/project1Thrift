@@ -1,11 +1,12 @@
-import type { ClothingProduct } from "../data/data";
+import type { CheckoutCardFunction } from "./ThriftHappens";
 
 export default function CheckoutCard({
     image,
     name,
     price,
     itemQuantity,
-}: ClothingProduct) {
+    handleRemoveItemCheckout
+}: CheckoutCardFunction) {
     return <div>
         <img src={image} alt={name} />
         <h3>{name}</h3>
@@ -29,6 +30,6 @@ export default function CheckoutCard({
         </div>
         <br />
 
-        <button>Remove</button>
+        <button onClick={() => handleRemoveItemCheckout(itemQuantity)}>Remove</button>
     </div>;
 }
