@@ -50,10 +50,11 @@ export default function ThriftHappens({ data }: ThriftHappensProps) {
     );
   }
 
-  // Adds a specific item to the checkout list
+  // Adds the item to the checkout list
   function handleAddCheckout(newItem: CheckoutItem) {
     if (newItem.itemQuantity === 0) return; // out of stock
 
+    // Adds the quantity if the item exists already
     if (checkout.find((item) => item.itemId === newItem.itemId)) {
       setCheckout((prev) =>
         prev.map((item) =>
@@ -65,10 +66,11 @@ export default function ThriftHappens({ data }: ThriftHappensProps) {
             : { ...item },
         ),
       );
-    } else {
+    } else { // Adds the new item
       setCheckout((prev) => [...prev, newItem]);
     }
 
+    // Update the quantity available in the Item
     setItemsInfo((prev) =>
       prev.map((item) =>
         item.id === newItem.itemId
@@ -81,7 +83,7 @@ export default function ThriftHappens({ data }: ThriftHappensProps) {
   // Removes the item from checkout and restore the item's quantity
   function handleRemoveItemCheckout(id: string, itemId: number, quantity: number) {
     setCheckout((prev) => prev.filter((item) => item.id !== id));
-
+    
     setItemsInfo((prev) =>
       prev.map((item) =>
         item.id === itemId
