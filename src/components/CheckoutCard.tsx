@@ -1,35 +1,41 @@
 import type { CheckoutCardFunction } from "./ThriftHappens";
 
 export default function CheckoutCard({
-    image,
-    name,
-    price,
-    itemQuantity,
-    handleRemoveItemCheckout
+  image,
+  name,
+  price,
+  itemQuantity,
+  handleRemoveItemCheckout,
 }: CheckoutCardFunction) {
-    return <div>
-        <img src={image} alt={name} />
+  return (
+    <div className="CheckoutCard">
+      <div id="block1">
+        <img src={image} alt={name} width={100} />
         <h3>{name}</h3>
-        <br />
+      </div>
+
+      <div id="block2">
+        <div>
+          <p>Unit Price</p>
+          <strong>CA${price.toFixed(2)}</strong>
+        </div>
 
         <div>
-            <p>Unit Price</p>
-            <p>{price}</p>
+          <p>Quantity</p>
+          <strong>{itemQuantity}</strong>
         </div>
-        <br />
+      </div>
 
+      <div id="block3">
         <div>
-            <p>Quantity</p>
-            <p>{itemQuantity}</p>
+          <h3 id="subtotal">Subtotal:</h3>
+          <h3>CA${(price * itemQuantity).toFixed(2)}</h3>
         </div>
-        <br />
 
-        <div>
-            <h3>Subtotal</h3>
-            <h3>${(price*itemQuantity).toPrecision(2)}</h3>
-        </div>
-        <br />
-
-        <button onClick={() => handleRemoveItemCheckout(itemQuantity)}>Remove</button>
-    </div>;
+        <button onClick={() => handleRemoveItemCheckout(itemQuantity)}>
+          REMOVE
+        </button>
+      </div>
+    </div>
+  );
 }

@@ -16,63 +16,64 @@ export default function ItemCard({
 }: ItemCardFunction) {
   return (
     <div className="ItemCard">
-      <img src={image} alt={name} />
+      <img src={image} alt={name} width={210} />
 
-      <h3>{name}</h3>
-      <br />
-      <h4>{description}</h4>
-      <br />
+      <h4>{name}</h4>
+      <p id={"description"}>{description}</p>
 
-      <div>
-        <p>Fit</p>
-        <p>{fit}</p>
+      <div className="ItemCardText">
+        <p>FIT</p>
+        <strong>{fit}</strong>
       </div>
-      <br />
-
-      <div>
-        <p>Size</p>
-        <p>{size}</p>
+      
+      <div className="ItemCardText">
+        <p>SIZE</p>
+        <strong>{size}</strong>
       </div>
-      <br />
 
-      <div>
-        <p>Category</p>
-        <p>{category}</p>
+      <div className="ItemCardText">
+        <p>CATEGORY</p>
+        <strong>{category}</strong>
       </div>
-      <br />
 
-      <div>
-        <p>Color</p>
-        <p>{color}</p>
+      <div className="ItemCardText">
+        <p>COLOR</p>
+        <strong>{color}</strong>
       </div>
-      <br />
 
-      <div>
-        <p>In Stock</p>
-        <p>{quantity}</p>
+      <div className="ItemCardText">
+        <p>IN STOCK</p>
+        <strong>{quantity}</strong>
       </div>
-      <br />
 
-      <h3>${price}</h3>
-      <br />
+      <div id="space"></div>
+
+      <h3>CA${price.toFixed(2)}</h3>
 
       {quantity === 0 ? (
-        <div>
+        <h3 id="outOfStock">OUT OF STOCK</h3>
+      ) : (
+        <div className="counterItem">
           <button
             disabled={itemQuantity === 0}
             onClick={() => handleQuantityAdjust(-1)}
-          >-</button>
+          >
+            -
+          </button>
           <span>{itemQuantity}</span>
           <button
             disabled={itemQuantity === quantity}
             onClick={() => handleQuantityAdjust(1)}
-          >+</button>
+          >
+            +
+          </button>
         </div>
-      ) : (
-        <h3>Out of Stock</h3>
       )}
 
-      <button disabled={itemQuantity === 0} onClick={() => handleAddCheckout(itemQuantity)}>
+      <button id="addToCart"
+        disabled={itemQuantity === 0}
+        onClick={() => handleAddCheckout(itemQuantity)}
+      >
         Add to Cart
       </button>
     </div>
