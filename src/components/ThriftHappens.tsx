@@ -2,7 +2,7 @@ import { useState } from "react";
 import CheckoutContainer from "./CheckoutContainer";
 import ItemsContainer from "./ItemsContainer";
 import NavBar from "./NavBar";
-import type { ClothingProduct } from "../data/data";
+import { products, type ClothingProduct } from "../data/data";
 
 export interface ItemCardFunction extends ClothingProduct {
   handleQuantityAdjust: (delta: number) => void;
@@ -22,11 +22,12 @@ export interface CheckoutCardFunction extends ClothingProduct {
 export interface CheckoutContainerProps {
   items: ClothingProduct[];
   handleRemoveItemCheckout: (id: number, quantity: number) => void;
+  handleEmptyCheckout: () => void;
 }
 
 export default function ThriftHappens() {
   // States
-  const [items, setItems] = useState<ClothingProduct[]>([] /* INITIALIZE */);
+  const [items, setItems] = useState<ClothingProduct[]>([...products]);
   const [checkout, setCheckout] = useState<ClothingProduct[]>([]);
 
   // Handlers
@@ -36,7 +37,7 @@ export default function ThriftHappens() {
     setItems((prev) =>
       prev.map((item) => {
         if (item.id === id) {
-          let total = item.quantity + delta;
+          let total = item.itemQuantity + delta;
           if (total <= item.quantity && total >= 0)
             return { ...item, itemQuantity: total };
         }
@@ -88,23 +89,30 @@ export default function ThriftHappens() {
     );
   }
 
+  // Removes all the items from checkout and restore all the item's quantities
+  function handleEmptyCheckout() {
+    checkout.forEach((item) =>
+      handleRemoveItemCheckout(item.id, item.itemQuantity),
+    );
+    setCheckout([]);
+  }
+
   // Main return
   return (
-    <div>
-      <header>
-        <NavBar></NavBar>
-      </header>
-      <body>
-        <ItemsContainer
-          items={items}
-          handleQuantityAdjust={handleQuantityAdjust}
-          handleAddCheckout={handleAddCheckout}
-        />
-        <CheckoutContainer
-          items={checkout}
-          handleRemoveItemCheckout={handleRemoveItemCheckout}
-        />
-      </body>
+    <div> 
+      <NavBar/>
+      <div className="MainContent">
+      <ItemsContainer
+        items={items}
+        handleQuantityAdjust={handleQuantityAdjust}
+        handleAddCheckout={handleAddCheckout}
+      />
+      <CheckoutContainer
+        items={checkout}
+        handleRemoveItemCheckout={handleRemoveItemCheckout}
+        handleEmptyCheckout={handleEmptyCheckout}
+      />
+      </div>
     </div>
   );
 }
