@@ -1,4 +1,11 @@
-import type { ItemCardFunction } from "./ThriftHappens";
+import type { ClothingProduct } from "../data/data";
+import type { CheckoutItem, ItemInfo } from "./ThriftHappens";
+
+export interface ItemCardFunction extends ClothingProduct {
+  itemInfo: ItemInfo;
+  handleQuantityAdjust: (delta: number) => void;
+  handleAddCheckout: (newItem: CheckoutItem) => void;
+}
 
 export default function ItemCard({
   name,
@@ -9,8 +16,7 @@ export default function ItemCard({
   description,
   size,
   price,
-  quantity,
-  itemQuantity,
+  itemInfo,
   handleQuantityAdjust,
   handleAddCheckout,
 }: ItemCardFunction) {
@@ -43,26 +49,26 @@ export default function ItemCard({
 
       <div className="ItemCardText">
         <p>IN STOCK</p>
-        <strong>{quantity}</strong>
+        <strong>{itemInfo.quantity}</strong>
       </div>
 
       <div id="space"></div>
 
       <h3>CA${price.toFixed(2)}</h3>
 
-      {quantity === 0 ? (
+      {itemInfo.quantity === 0 ? (
         <h3 id="outOfStock">OUT OF STOCK</h3>
       ) : (
         <div className="counterItem">
           <button
-            disabled={itemQuantity === 0}
+            disabled={itemInfo.itemQuantity === 0}
             onClick={() => handleQuantityAdjust(-1)}
           >
             -
           </button>
-          <span>{itemQuantity}</span>
+          <span>{itemInfo.itemQuantity}</span>
           <button
-            disabled={itemQuantity === quantity}
+            disabled={itemInfo.itemQuantity === itemInfo.quantity}
             onClick={() => handleQuantityAdjust(1)}
           >
             +
@@ -71,8 +77,15 @@ export default function ItemCard({
       )}
 
       <button id="addToCart"
-        disabled={itemQuantity === 0}
-        onClick={() => handleAddCheckout(itemQuantity)}
+        disabled={itemInfo.itemQuantity === 0}
+        onClick={() => handleAddCheckout({
+          id: crypto.randomUUID(),
+          itemId: itemInfo.id,
+          image: image,
+          name: name,
+          itemQuantity: itemInfo.itemQuantity,
+          price: price,
+        })}
       >
         Add to Cart
       </button>

@@ -2,39 +2,43 @@ import { useState } from "react";
 import CheckoutContainer from "./CheckoutContainer";
 import ItemsContainer from "./ItemsContainer";
 import NavBar from "./NavBar";
-import { products, type ClothingProduct } from "../data/data";
+import { type ClothingProduct } from "../data/data";
 
-export interface ItemCardFunction extends ClothingProduct {
-  handleQuantityAdjust: (delta: number) => void;
-  handleAddCheckout: (quantity: number) => void;
+interface ThriftHappensProps {
+  data: ClothingProduct[];
 }
 
-export interface ItemsContainerProps {
-  items: ClothingProduct[];
-  handleQuantityAdjust: (id: number, delta: number) => void;
-  handleAddCheckout: (id: number, quantity: number) => void;
+export interface ItemInfo {
+  id: number;
+  quantity: number;
+  itemQuantity: number;
 }
 
-export interface CheckoutCardFunction extends ClothingProduct {
-  handleRemoveItemCheckout: (quantity: number) => void;
+export interface CheckoutItem {
+  id: string,
+  itemId: number,
+  image: string,
+  name: string,
+  itemQuantity: number,
+  price: number,
 }
 
-export interface CheckoutContainerProps {
-  items: ClothingProduct[];
-  handleRemoveItemCheckout: (id: number, quantity: number) => void;
-  handleEmptyCheckout: () => void;
-}
-
-export default function ThriftHappens() {
+export default function ThriftHappens({ data }: ThriftHappensProps) {
   // States
-  const [items, setItems] = useState<ClothingProduct[]>([...products]);
-  const [checkout, setCheckout] = useState<ClothingProduct[]>([]);
+  const [checkout, setCheckout] = useState<CheckoutItem[]>([]);
+  const [itemsInfo, setItemsInfo] = useState<ItemInfo[]>(() =>
+    data.map((item) => ({
+      id: item.id,
+      quantity: item.quantity,
+      itemQuantity: item.itemQuantity,
+    })),
+  );
 
   // Handlers
 
   // Handles the addtion and subtraction of the counter for each item
   function handleQuantityAdjust(id: number, delta: number) {
-    setItems((prev) =>
+    setItemsInfo((prev) =>
       prev.map((item) => {
         if (item.id === id) {
           let total = item.itemQuantity + delta;
@@ -47,42 +51,40 @@ export default function ThriftHappens() {
   }
 
   // Adds a specific item to the checkout list
-  function handleAddCheckout(id: number, quantity: number) {
-    if (quantity === 0) return;
+  function handleAddCheckout(newItem: CheckoutItem) {
+    if (newItem.itemQuantity === 0) return; // out of stock
 
-    if (checkout.find((item) => item.id === id)) {
+    if (checkout.find((item) => item.itemId === newItem.itemId)) {
       setCheckout((prev) =>
         prev.map((item) =>
-          item.id === id
+          item.itemId === newItem.itemId
             ? {
                 ...item,
-                itemQuantity: item.itemQuantity + quantity,
+                itemQuantity: item.itemQuantity + newItem.itemQuantity,
               }
             : { ...item },
         ),
       );
     } else {
-      let itemAdd = items.find((item) => item.id === id);
-      if (itemAdd === undefined) return;
-      setCheckout((prev) => [...prev, itemAdd]);
+      setCheckout((prev) => [...prev, newItem]);
     }
 
-    setItems((prev) =>
+    setItemsInfo((prev) =>
       prev.map((item) =>
-        item.id === id
-          ? { ...item, quantity: item.quantity - quantity, itemQuantity: 0 }
+        item.id === newItem.itemId
+          ? { ...item, quantity: item.quantity - newItem.itemQuantity, itemQuantity: 0 }
           : { ...item },
       ),
     );
   }
 
   // Removes the item from checkout and restore the item's quantity
-  function handleRemoveItemCheckout(id: number, quantity: number) {
+  function handleRemoveItemCheckout(id: string, itemId: number, quantity: number) {
     setCheckout((prev) => prev.filter((item) => item.id !== id));
 
-    setItems((prev) =>
+    setItemsInfo((prev) =>
       prev.map((item) =>
-        item.id === id
+        item.id === itemId
           ? { ...item, quantity: item.quantity + quantity }
           : { ...item },
       ),
@@ -92,26 +94,27 @@ export default function ThriftHappens() {
   // Removes all the items from checkout and restore all the item's quantities
   function handleEmptyCheckout() {
     checkout.forEach((item) =>
-      handleRemoveItemCheckout(item.id, item.itemQuantity),
+      handleRemoveItemCheckout(item.id, item.itemId, item.itemQuantity),
     );
     setCheckout([]);
   }
 
   // Main return
   return (
-    <div> 
-      <NavBar/>
+    <div>
+      <NavBar />
       <div className="MainContent">
-      <ItemsContainer
-        items={items}
-        handleQuantityAdjust={handleQuantityAdjust}
-        handleAddCheckout={handleAddCheckout}
-      />
-      <CheckoutContainer
-        items={checkout}
-        handleRemoveItemCheckout={handleRemoveItemCheckout}
-        handleEmptyCheckout={handleEmptyCheckout}
-      />
+        <ItemsContainer
+          data={data}
+          itemsInfo={itemsInfo}
+          handleQuantityAdjust={handleQuantityAdjust}
+          handleAddCheckout={handleAddCheckout}
+        />
+        <CheckoutContainer
+          items={checkout}
+          handleRemoveItemCheckout={handleRemoveItemCheckout}
+          handleEmptyCheckout={handleEmptyCheckout}
+        />
       </div>
     </div>
   );

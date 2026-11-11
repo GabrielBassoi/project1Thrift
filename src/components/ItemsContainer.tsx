@@ -1,21 +1,37 @@
+import type { ClothingProduct } from "../data/data";
 import ItemCard from "./ItemCard";
-import type { ItemsContainerProps } from "./ThriftHappens";
+import type { CheckoutItem, ItemInfo } from "./ThriftHappens";
+
+interface ItemsContainerProps {
+  data: ClothingProduct[];
+  itemsInfo: ItemInfo[];
+
+  handleQuantityAdjust: (id: number, delta: number) => void;
+  handleAddCheckout: (newItem: CheckoutItem) => void;
+}
 
 export default function ItemsContainer({
-  items,
+  data,
+  itemsInfo,
   handleQuantityAdjust,
   handleAddCheckout
 }: ItemsContainerProps) {
   return (
     <div className="ItemContainer">
-      {items.map((item) => (
+      {data.map((item) => {
+        const info = itemsInfo.find((info) => info.id === item.id);
+        if(!info) return null;
+
+        return (
         <ItemCard
           key={item.id}
           {...item}
+          itemInfo={info}
+          
           handleQuantityAdjust={(delta: number) => handleQuantityAdjust(item.id, delta)}
-          handleAddCheckout={(quantity: number) => handleAddCheckout(item.id, quantity)}
+          handleAddCheckout={(newItem: CheckoutItem) => handleAddCheckout(newItem)}
         />
-      ))}
+      )})}
     </div>
   );
 }

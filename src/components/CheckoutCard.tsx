@@ -1,4 +1,8 @@
-import type { CheckoutCardFunction } from "./ThriftHappens";
+import type { CheckoutItem } from "./ThriftHappens";
+
+export interface CheckoutCardFunction extends CheckoutItem{
+  handleRemoveItemCheckout: (quantity: number) => void;
+}
 
 export default function CheckoutCard({
   image,
